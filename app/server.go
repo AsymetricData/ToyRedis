@@ -18,11 +18,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, err = s.Accept()
+	defer s.Close()
 
-	if err != nil {
-		fmt.Println("Server failed to Accept ", err.Error())
-		os.Exit(1)
+	for {
+		conn, err := s.Accept()
+
+		defer conn.Close()
+
+		if err != nil {
+			fmt.Println("Server failed to Accept ", err.Error())
+			os.Exit(1)
+		}
+
+		conn.Write([]byte("+PONG\r\n"))
+
 	}
 
 }
